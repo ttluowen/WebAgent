@@ -1,0 +1,29 @@
+[2018-11-20 10:07:59 星期二] C:\Users\Admin\Workspaces\MyEclipse 2017 CI\com.yy.app.webagent\WEB-INF\configs.properties (The system cannot find the path specified)
+java.io.FileInputStream.open0(Native Method)
+java.io.FileInputStream.open(FileInputStream.java:195)
+java.io.FileInputStream.<init>(FileInputStream.java:138)
+com.yy.util.PropertyUtil.read(PropertyUtil.java:77)
+com.yy.util.PropertyUtil.read(PropertyUtil.java:46)
+com.yy.util.PropertyUtil.read(PropertyUtil.java:34)
+com.yy.web.config.SystemConfig.initSystemConfig(SystemConfig.java:212)
+com.yy.app.webagent.WebAgentMain.mainInit(WebAgentMain.java:33)
+com.yy.app.webagent.WebAgentMain.main(WebAgentMain.java:45)
+
+[2018-11-20 10:07:59 星期二] configs.properties 文件不存在。
+[2018-11-20 10:07:59 星期二] 读取C:\Users\Admin\Workspaces\MyEclipse 2017 CI\com.yy.app.webagent\WEB-INF\database.xml文件失败
+[2018-11-20 10:07:59 星期二] 启动服务，端口 8081
+[2018-11-20 10:08:38 星期二] C:\Users\Admin\Workspaces\MyEclipse 2017 CI\com.yy.app.webagent\WEB-INF\configs.properties (The system cannot find the path specified)
+java.io.FileInputStream.open0(Native Method)
+java.io.FileInputStream.open(FileInputStream.java:195)
+java.io.FileInputStream.<init>(FileInputStream.java:138)
+com.yy.util.PropertyUtil.read(PropertyUtil.java:77)
+com.yy.util.PropertyUtil.read(PropertyUtil.java:46)
+com.yy.util.PropertyUtil.read(PropertyUtil.java:34)
+com.yy.web.config.SystemConfig.initSystemConfig(SystemConfig.java:212)
+com.yy.app.webagent.WebAgentMain.mainInit(WebAgentMain.java:33)
+com.yy.app.webagent.WebAgentMain.main(WebAgentMain.java:47)
+
+[2018-11-20 10:08:38 星期二] configs.properties 文件不存在。
+[2018-11-20 10:08:38 星期二] 启动服务，端口 8081
+[2018-11-20 10:09:29 星期二] 启动服务，端口 8081
+[2018-11-20 11:19:27 星期二] 启动服务，端口 8081
