@@ -8,7 +8,8 @@ import com.yy.web.config.SystemConfig;
 
 public class Util {
 	
-	public static final String hostname = "127.0.0.1";
+//	public static final String hostname = "127.0.0.1";
+	public static final String hostname = "dudongli.vicp.net";
 	public static final int port = 92;
 
 
