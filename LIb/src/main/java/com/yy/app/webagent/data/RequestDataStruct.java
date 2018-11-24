@@ -23,7 +23,7 @@ public class RequestDataStruct {
 		this.data = data;
 	}
 
-	public class ParamsStruct {
+	public static class ParamsStruct {
 
 		private String url;
 		private String method;

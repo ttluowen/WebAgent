@@ -36,7 +36,7 @@ public class DataFactory {
 			headers = new MapValue();
 		}
 		
-		RequestDataStruct.ParamsStruct params = new RequestDataStruct().new ParamsStruct();
+		RequestDataStruct.ParamsStruct params = new RequestDataStruct.ParamsStruct();
 		params.setUrl(url);
 		params.setMethod(method);
 		params.setHeaders(headers);
@@ -60,7 +60,7 @@ public class DataFactory {
 		}
 		
 		
-		ResponseDataStruct.ParamsStruct params = new ResponseDataStruct().new ParamsStruct();
+		ResponseDataStruct.ParamsStruct params = new ResponseDataStruct.ParamsStruct();
 		params.setHeaders(headers);
 
 				
@@ -136,7 +136,8 @@ public class DataFactory {
         // 请求头。
         byte[] paramsByte = new byte[headerSize];
         System.arraycopy(bytes, HEADER_SIZE, paramsByte, 0, headerSize);
-        RequestDataStruct.ParamsStruct params = JSON.parseObject(new String(paramsByte), RequestDataStruct.ParamsStruct.class);
+        String paramsStr = new String(paramsByte);
+        RequestDataStruct.ParamsStruct params = JSON.parseObject(paramsStr, RequestDataStruct.ParamsStruct.class);
         
         // 数据。
         int dataSize = bytes.length - HEADER_SIZE - headerSize;
@@ -173,7 +174,8 @@ public class DataFactory {
         // 请求头。
         byte[] paramsByte = new byte[headerSize];
         System.arraycopy(bytes, HEADER_SIZE, paramsByte, 0, headerSize);
-        ResponseDataStruct.ParamsStruct params = JSON.parseObject(new String(paramsByte), ResponseDataStruct.ParamsStruct.class);
+        String paramsStr = new String(paramsByte);
+        ResponseDataStruct.ParamsStruct params = JSON.parseObject(paramsStr, ResponseDataStruct.ParamsStruct.class);
         
         // 数据。
         int dataSize = bytes.length - HEADER_SIZE - headerSize;

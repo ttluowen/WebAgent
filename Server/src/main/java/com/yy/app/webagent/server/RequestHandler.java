@@ -3,26 +3,30 @@ package com.yy.app.webagent.server;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.util.StringUtil;
 
 import com.yy.app.webagent.data.DataFactory;
-import com.yy.app.webagent.data.RequestDataStruct;
-import com.yy.app.webagent.server.exception.UnsupportedMethodException;
+import com.yy.app.webagent.server.exception.ParseDataErrorException;
+import com.yy.app.webagent.server.exception.UnsupportedMethodTypeException;
+import com.yy.log.Logger;
 import com.yy.util.MapValue;
+import com.yy.util.StringUtil;
 import com.yy.web.ServletHttp;
 
 
 public class RequestHandler extends AbstractHandler {
 	
-	private static final String RESPONSE_CONTENT_TYPE = "application/octet-stream";
+	private static final String RESPONSE_BTYE_CONTENT_TYPE = "application/octet-stream";
+	private static final String RESPONSE_HTML_CONTENT_TYPE = "text/html";
 	
 	private String target;
 	private Request baseRequest;
@@ -32,33 +36,41 @@ public class RequestHandler extends AbstractHandler {
 
 	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		
-		this.target = target;
+
 		this.baseRequest = baseRequest;
+		this.target = target;
 		this.request = request;
 		this.response = response;
-		
-		byte[] bytes = IOUtils.toByteArray(request.getInputStream());
-		RequestDataStruct requesetData = DataFactory.parseRequestData(bytes);
 
-		if (requesetData != null) {
-			// 默认代理。
-		} else {
-			String url = ServletHttp.request_S(request, "url");
-			if (StringUtil.isNotBlank(url)) {
-				// GET 方式代理。
-				try {
-					ProxyServer.doGet(url, getHeaders());
-				} catch (UnsupportedOperationException e) {
-					e.printStackTrace();
-				} catch (UnsupportedMethodException e) {
-					e.printStackTrace();
-				}
+		try {
+			byte[] bytes = IOUtils.toByteArray(request.getInputStream());
+			if (bytes != null && bytes.length > 0) {
+				// 默认代理。
+				out(ProxyFactory.request(DataFactory.parseRequestData(bytes)));
 			} else {
-				// 解析数据失败。
-				outParseDataError();
+				String url = ServletHttp.request_S(request, "url");
+				if (!StringUtil.isEmpty(url)) {
+					// GET 方式代理。
+					out(ProxyFactory.doGet(url, getHeaders()));
+				} else {
+					Logger.log(target + " 无效的请求参数");
+
+					// 解析数据失败。
+					outParseDataError();
+				}
 			}
-			
+		} catch (UnsupportedOperationException e) {
+			e.printStackTrace();
+			outParseDataError();
+		} catch (ParseDataErrorException e) {
+			Logger.printStackTrace(e);
+			outParseDataError();
+		} catch (UnsupportedMethodTypeException e) {
+			Logger.printStackTrace(e);
+			outParseDataError();
+		} catch (Exception e) {
+			Logger.printStackTrace(e);
+			outParseDataError();
 		}
 	}
 	
@@ -95,10 +107,48 @@ public class RequestHandler extends AbstractHandler {
 		
 		HttpServletResponse response = getResponse();
 
-		response.setContentType(RESPONSE_CONTENT_TYPE);
+		response.setContentType(RESPONSE_HTML_CONTENT_TYPE);
+		response.setCharacterEncoding(StringUtil.UTF8);
 		response.setStatus(HttpServletResponse.SC_OK);
-		getBaseRequest().setHandled(true);
 		response.getWriter().println("parse data error");
+		
+		getBaseRequest().setHandled(true);
+	}
+	
+	
+	/**
+	 * 输出默认的字节内容。
+	 * 
+	 * @param responseData
+	 * @throws IOException
+	 */
+	private void out(ResponseData responseData) throws IOException {
+		
+		HttpServletResponse response = getResponse();
+
+		response.setContentType(RESPONSE_BTYE_CONTENT_TYPE);
+		response.setStatus(HttpServletResponse.SC_OK);
+		
+		
+		// 设置响应头。
+		MapValue headers = responseData.getHeaders();
+		if (headers != null) {
+			Iterator<String> headerNames = headers.keySet().iterator();
+			while (headerNames.hasNext()) {
+				String name = headerNames.next();
+				String value = headers.getString(name);
+				if (!StringUtil.isEmpty(value)) {
+					response.setHeader(name, value);
+				}
+			}
+		}
+
+		
+		ServletOutputStream out = response.getOutputStream();
+		out.write(responseData.getData());
+		out.flush();
+		
+		getBaseRequest().setHandled(true);
 	}
 
 

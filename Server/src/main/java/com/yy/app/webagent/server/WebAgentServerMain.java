@@ -5,11 +5,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
 import com.yy.log.Logger;
+import com.yy.util.NumberUtil;
 import com.yy.web.config.SystemConfig;
 
 public class WebAgentServerMain {
 	
-	private static final int PORT = 8081;
+	private static final int PORT = 92;
 	
 	
 	/**
@@ -20,14 +21,28 @@ public class WebAgentServerMain {
 		String root = System.getProperty("user.dir") + "\\";
 		SystemConfig.setSystemPath(root);
 		SystemConfig.setWebInfPath(root + "WEB-INF\\");
+		
+		SystemConfig sys = new SystemConfig(null);
+		sys.initSystemConfig();
 
 		Logger.setSystemPath(root);
 	}
 
 	
+	/**
+	 * 执行入口。
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		
 		mainInit();
+		
+		int port = NumberUtil.parseInt(SystemConfig.getConfig("prop"));
+		if (port == 0) {
+			port = PORT;
+		}
 
 
 		Server server = new Server();
@@ -35,11 +50,11 @@ public class WebAgentServerMain {
 		server.setHandler(new RequestHandler());
 
 		ServerConnector connector1 = new ServerConnector(server);
-		connector1.setPort(PORT);
+		connector1.setPort(port);
 		server.setConnectors(new Connector[] { connector1 });
 		
 		
-		Logger.log("启动服务，端口 " + PORT);
+		Logger.log("启动服务，端口 " + port);
 		
 
 		server.start();

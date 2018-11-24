@@ -23,7 +23,7 @@ public class ResponseDataStruct {
 		this.data = data;
 	}
 
-	public class ParamsStruct {
+	public static class ParamsStruct {
 
 		private MapValue headers;
 
