@@ -1,2 +1,5 @@
 /Server/logs
 /Server/history
+/Server/bin
+/LIb/target
+/Server/target
